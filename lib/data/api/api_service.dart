@@ -24,10 +24,14 @@ class ApiService {
         "password": password,
       }),
     );
-    if (response.statusCode == 200) {
+
+    if (response.statusCode.toString().startsWith('2')) {
       return RegisterAndAddStoryResponse.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Gagal Register User');
+      final error = RegisterAndAddStoryResponse.fromJson(
+        json.decode(response.body),
+      );
+      throw Exception('Gagal Register User: ${error.message}');
     }
   }
 

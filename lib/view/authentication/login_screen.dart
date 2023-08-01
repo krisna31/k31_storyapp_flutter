@@ -115,6 +115,9 @@ class LoginForm extends StatelessWidget {
                         height: 20,
                       ),
                       TextFormField(
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
                         decoration: const InputDecoration(
                           hintText: "Password",
                         ),
@@ -144,7 +147,12 @@ class LoginForm extends StatelessWidget {
                             : const Text('Login'),
                       ),
                       const SizedBox(height: 20),
-                      const HrefTag(href: 'Register new account'),
+                      HrefTag(
+                        placeholder: 'Register new account',
+                        href: RouteHelper.toPath(
+                          AppRoute.register,
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       Builder(
                         builder: (context) {

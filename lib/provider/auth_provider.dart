@@ -51,12 +51,13 @@ class AuthProvider extends ChangeNotifier {
   void register(String name, String email, String password) async {
     try {
       _state = ResState.loading;
+      notifyListeners();
       await apiService.register(name, email, password);
       _state = ResState.hasData;
       notifyListeners();
     } catch (e) {
       _state = ResState.error;
-      _message = 'Register gagal, $e';
+      _message = e.toString().replaceFirst('Exception:', '');
       notifyListeners();
     }
   }

@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../routes/app_route.dart';
-import '../routes/route_helper.dart';
-
 class HrefTag extends StatelessWidget {
   final String href;
+  final String placeholder;
   const HrefTag({
     super.key,
     required this.href,
+    required this.placeholder,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.go(
-          RouteHelper.toPath(AppRoute.register),
-        );
+        context.go(href);
       },
       child: Text(
-        href,
+        placeholder,
         style: const TextStyle(
           decoration: TextDecoration.underline,
           color: Colors.blue,
