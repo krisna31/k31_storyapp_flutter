@@ -1,21 +1,21 @@
 import 'dart:convert';
 
-class GeneralResponse {
+class RegisterAndAddStoryResponse {
   final bool error;
   final String message;
 
-  GeneralResponse({
+  RegisterAndAddStoryResponse({
     required this.error,
     required this.message,
   });
 
-  factory GeneralResponse.fromRawJson(String str) =>
-      GeneralResponse.fromJson(json.decode(str));
+  factory RegisterAndAddStoryResponse.fromRawJson(String str) =>
+      RegisterAndAddStoryResponse.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory GeneralResponse.fromJson(Map<String, dynamic> json) =>
-      GeneralResponse(
+  factory RegisterAndAddStoryResponse.fromJson(Map<String, dynamic> json) =>
+      RegisterAndAddStoryResponse(
         error: json["error"],
         message: json["message"],
       );

@@ -1,44 +1,53 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:k31_storyapp_flutter/models/detail_story_response.dart';
-import 'package:k31_storyapp_flutter/models/general_response.dart';
+import 'package:k31_storyapp_flutter/models/register_and_add_response.dart';
 import 'package:k31_storyapp_flutter/models/login_response.dart';
 import 'package:k31_storyapp_flutter/models/stories_response.dart';
 
 class ApiService {
   static const String baseUrl = 'https://story-api.dicoding.dev/v1';
 
-  Future<GeneralResponse> register() async {
+  Future<RegisterAndAddStoryResponse> register(
+    String name,
+    String email,
+    String password,
+  ) async {
     final response = await http.post(
       Uri.parse("$baseUrl/register"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(<String, String>{
-        "name": "string",
-        "email": "string",
-        "password": "string",
+        "name": name,
+        "email": email,
+        "password": password,
       }),
     );
     if (response.statusCode == 200) {
-      return GeneralResponse.fromJson(json.decode(response.body));
+      return RegisterAndAddStoryResponse.fromJson(json.decode(response.body));
     } else {
       throw Exception('Gagal Register User');
     }
   }
 
-  Future<LoginResponse> login() async {
+  Future<LoginResponse> login(
+    String email,
+    String password,
+  ) async {
     final response = await http.post(
       Uri.parse("$baseUrl/login"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(<String, String>{
-        "email": "string",
-        "password": "string",
+        "email": email,
+        "password": password,
       }),
     );
+
     if (response.statusCode == 200) {
       return LoginResponse.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Gagal Login User');
+      throw Exception('Gagal Login User ${response.statusCode}');
     }
   }
 
@@ -69,25 +78,30 @@ class ApiService {
     }
   }
 
-  // Future<AddReview> addReview(
-  //   String keyword,
-  //   idRestaurant,
-  //   name,
-  //   review,
-  // ) async {
-  //   final response = await http.post(
-  //     Uri.parse("$baseUrl/review"),
-  //     headers: {"Content-Type": "application/json"},
-  //     body: {
-  //       "id": idRestaurant,
-  //       "name": name,
-  //       "review": review,
-  //     },
-  //   );
-  //   if (response.statusCode == 200) {
-  //     return AddReview.fromJson(json.decode(response.body));
-  //   } else {
-  //     throw Exception('Data Restoran Gagal Dimuat');
-  //   }
-  // }
+  Future<RegisterAndAddStoryResponse> addStory(
+    String description,
+    File foto,
+    String token,
+  ) async {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse("$baseUrl/stories"),
+    );
+    request.headers.addAll({
+      "Authorization": "Bearer $token",
+    });
+    request.fields['description'] = description;
+    request.files.add(
+      await http.MultipartFile.fromPath('foto', foto.path),
+    );
+    final response = await request.send();
+    final responseFromServer = await http.Response.fromStream(response);
+
+    if (response.statusCode == 201) {
+      return RegisterAndAddStoryResponse.fromJson(
+          json.decode(responseFromServer.body));
+    } else {
+      throw Exception('Gagal Menambahkan Story');
+    }
+  }
 }

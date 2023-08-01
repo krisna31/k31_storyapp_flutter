@@ -20,25 +20,6 @@ class RouteHelper {
     }
   }
 
-  static String toName(AppRoute route) {
-    switch (route) {
-      case AppRoute.home:
-        return "HOME";
-      case AppRoute.login:
-        return "LOGIN";
-      case AppRoute.register:
-        return "REGISTER";
-      case AppRoute.splash:
-        return "SPLASH";
-      case AppRoute.error:
-        return "ERROR";
-      case AppRoute.detailStory:
-        return "START";
-      default:
-        return "HOME";
-    }
-  }
-
   static String toTitle(AppRoute route) {
     switch (route) {
       case AppRoute.home:
