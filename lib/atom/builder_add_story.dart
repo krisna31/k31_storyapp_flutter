@@ -29,14 +29,7 @@ class BuilderAddStory extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            storyProvider.imagePath == null
-                ? const Center(
-                    child: Icon(
-                      Icons.image,
-                      size: 100,
-                    ),
-                  )
-                : AddStoryHelper.showimg(storyProvider),
+            _showImgOrPlaceholder(),
             const SizedBox(height: 20),
             DeskripsiInputAddStory(
               descriptionController: _descriptionController,
@@ -60,5 +53,13 @@ class BuilderAddStory extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _showImgOrPlaceholder() {
+    if (storyProvider.imagePath == null) {
+      return const Center(child: Icon(Icons.image));
+    } else {
+      return AddStoryHelper.showimg(storyProvider);
+    }
   }
 }

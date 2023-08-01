@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../routes/app_route.dart';
 import '../../routes/route_helper.dart';
 

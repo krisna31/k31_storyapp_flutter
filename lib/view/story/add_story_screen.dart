@@ -24,11 +24,15 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
   Widget build(BuildContext context) {
     const paddingPrimary = EdgeInsets.fromLTRB(32, 16, 31, 16);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(RouteHelper.toTitle(AppRoute.detailStory)),
-        leading: const AddStoryLeadingIcon(),
-      ),
+      appBar: _buildAppBar(),
       body: _buildBody(paddingPrimary),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Text(RouteHelper.toTitle(AppRoute.detailStory)),
+      leading: const AddStoryLeadingIcon(),
     );
   }
 
