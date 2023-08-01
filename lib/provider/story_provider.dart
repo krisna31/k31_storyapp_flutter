@@ -55,6 +55,7 @@ class StoryProvider extends ChangeNotifier {
   void getDetailStory(String id) async {
     try {
       _state = ResState.loading;
+      notifyListeners();
       final detailStory = await apiService.getDetailStory(
         id,
         await preferenceHelper.getToken,

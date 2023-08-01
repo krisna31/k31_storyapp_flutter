@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:k31_storyapp_flutter/atom/image_with_network.dart';
@@ -42,7 +40,8 @@ class _StoriesScreenState extends State<StoriesScreen> {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    log('/${storyProvider.stories[index].id}');
+                    storyProvider
+                        .getDetailStory(storyProvider.stories[index].id);
                     context.go(
                       '/${storyProvider.stories[index].id}',
                     );

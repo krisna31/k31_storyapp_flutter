@@ -13,6 +13,10 @@ class AddStoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(RouteHelper.toTitle(AppRoute.detailStory)),
+        leading: IconButton(
+          onPressed: () => context.go('/'),
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: Center(
         child: ElevatedButton(

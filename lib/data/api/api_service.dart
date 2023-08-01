@@ -78,13 +78,24 @@ class ApiService {
   }
 
   Future<DetailStoryResponse> getDetailStory(
-      String storyId, String token) async {
-    final response = await http.get(Uri.parse("$baseUrl/stories/$storyId"));
+    String storyId,
+    String token,
+  ) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/stories/$storyId"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      },
+    );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode.toString().startsWith('2')) {
       return DetailStoryResponse.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Data Detail Story Gagal Dimuat');
+      final error = RegisterAndAddStoryResponse.fromJson(
+        json.decode(response.body),
+      );
+      throw Exception('Gagal Login User: ${error.message}');
     }
   }
 

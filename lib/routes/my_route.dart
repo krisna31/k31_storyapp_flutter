@@ -86,6 +86,8 @@ class MyRoute {
         return RouteHelper.toPath(AppRoute.splash);
       } else if (isLogin && isGoingToDetailStory) {
         return state.matchedLocation;
+      } else if (isLogin && isGoingToAddStory) {
+        return RouteHelper.toPath(AppRoute.addStory);
       } else if (isLogin) {
         return RouteHelper.toPath(AppRoute.home);
       } else if (!isLogin && isGoingToRegister) {
