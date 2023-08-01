@@ -44,10 +44,13 @@ class ApiService {
       }),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode.toString().startsWith('2')) {
       return LoginResponse.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Gagal Login User ${response.statusCode}');
+      final error = RegisterAndAddStoryResponse.fromJson(
+        json.decode(response.body),
+      );
+      throw Exception('Gagal Login User: ${error.message}');
     }
   }
 

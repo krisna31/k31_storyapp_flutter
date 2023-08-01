@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:k31_storyapp_flutter/provider/auth_provider.dart';
@@ -71,13 +69,15 @@ class MyRoute {
 
       final isGoingToLogin =
           state.matchedLocation == RouteHelper.toPath(AppRoute.login);
-
-      log(isSplash.toString());
+      final isGoingToRegister =
+          state.matchedLocation == RouteHelper.toPath(AppRoute.register);
 
       if (isSplash) {
         return RouteHelper.toPath(AppRoute.splash);
-      } else if (isLogin && isGoingToLogin) {
+      } else if (isLogin) {
         return RouteHelper.toPath(AppRoute.home);
+      } else if (!isLogin && isGoingToRegister) {
+        return RouteHelper.toPath(AppRoute.register);
       } else if (!isLogin && !isGoingToLogin) {
         return RouteHelper.toPath(AppRoute.login);
       } else {

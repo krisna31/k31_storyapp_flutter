@@ -14,8 +14,11 @@ class AuthProvider extends ChangeNotifier {
 
   bool _isLogin = false;
   String _message = '';
-  bool _isSplash = true;
-  late ResState _state;
+
+  /// ! Dont forget to change this for spalash screen
+  // bool _isSplash = true;
+  bool _isSplash = false;
+  ResState _state = ResState.initial;
 
   bool get isLogin => _isLogin;
   ResState get state => _state;
@@ -31,6 +34,7 @@ class AuthProvider extends ChangeNotifier {
   void login(String email, String password) async {
     try {
       _state = ResState.loading;
+      notifyListeners();
       final loginData = await apiService.login(email, password);
       _state = ResState.hasData;
       preferenceHelper.setToken(loginData.loginResult.token);
@@ -39,7 +43,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _state = ResState.error;
-      _message = 'Login gagal, $e';
+      _message = e.toString().replaceFirst('Exception:', '');
       notifyListeners();
     }
   }
