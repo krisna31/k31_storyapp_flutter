@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:k31_storyapp_flutter/atom/image_with_network.dart';
+import 'package:k31_storyapp_flutter/provider/auth_provider.dart';
 import 'package:k31_storyapp_flutter/provider/story_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -18,11 +19,24 @@ class StoriesScreen extends StatefulWidget {
 class _StoriesScreenState extends State<StoriesScreen> {
   @override
   Widget build(BuildContext context) {
+    List<IconButton> listOfActions = [
+      IconButton(
+        onPressed: () {
+          final authProvider = context.read<AuthProvider>();
+          authProvider.logout();
+        },
+        icon: const Icon(
+          Icons.exit_to_app,
+        ),
+        tooltip: "Exit The App",
+      )
+    ];
     return Scaffold(
       appBar: AppBar(
         title: Text(
           RouteHelper.toTitle(AppRoute.home),
         ),
+        actions: listOfActions,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.go(RouteHelper.toPath(AppRoute.addStory)),

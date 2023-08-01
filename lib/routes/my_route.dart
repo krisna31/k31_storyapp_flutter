@@ -21,9 +21,9 @@ class MyRoute {
     refreshListenable: authProvider,
     routes: [
       GoRoute(
-        path: RouteHelper.toPath(AppRoute.splash),
+        path: RouteHelper.toPath(AppRoute.register),
         builder: (BuildContext context, GoRouterState state) {
-          return const SplashScreen();
+          return const RegisterScreen();
         },
       ),
       GoRoute(
@@ -33,9 +33,9 @@ class MyRoute {
         },
       ),
       GoRoute(
-        path: RouteHelper.toPath(AppRoute.register),
+        path: RouteHelper.toPath(AppRoute.splash),
         builder: (BuildContext context, GoRouterState state) {
-          return const RegisterScreen();
+          return const SplashScreen();
         },
       ),
       GoRoute(

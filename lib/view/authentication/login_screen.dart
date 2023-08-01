@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:k31_storyapp_flutter/enum/res_state.dart';
 import 'package:k31_storyapp_flutter/provider/auth_provider.dart';
 import 'package:k31_storyapp_flutter/util/string_helper.dart';
@@ -128,12 +131,15 @@ class LoginForm extends StatelessWidget {
                         height: 20,
                       ),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            value.login(
+                            await value.login(
                               _emailController.text,
                               _passwordController.text,
                             );
+                            if (value.isLogin) {
+                              context.go("/");
+                            }
                           }
                         },
                         child: value.state == ResState.loading

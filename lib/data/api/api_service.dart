@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:k31_storyapp_flutter/models/detail_story_response.dart';
@@ -101,8 +100,9 @@ class ApiService {
 
   Future<RegisterAndAddStoryResponse> addStory(
     String description,
-    File foto,
+    List<int> foto,
     String token,
+    String fileName,
   ) async {
     final request = http.MultipartRequest(
       'POST',
@@ -113,7 +113,11 @@ class ApiService {
     });
     request.fields['description'] = description;
     request.files.add(
-      await http.MultipartFile.fromPath('foto', foto.path),
+      http.MultipartFile.fromBytes(
+        'photo',
+        foto,
+        filename: "$token-$fileName",
+      ),
     );
     final response = await request.send();
     final responseFromServer = await http.Response.fromStream(response);
@@ -122,7 +126,10 @@ class ApiService {
       return RegisterAndAddStoryResponse.fromJson(
           json.decode(responseFromServer.body));
     } else {
-      throw Exception('Gagal Menambahkan Story');
+      final error = RegisterAndAddStoryResponse.fromJson(
+        json.decode(responseFromServer.body),
+      );
+      throw Exception('Gagal Create Story: ${error.message}');
     }
   }
 }

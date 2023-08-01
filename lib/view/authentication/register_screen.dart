@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:k31_storyapp_flutter/enum/res_state.dart';
@@ -94,7 +96,7 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
       builder: (context, value, child) {
-        if (value.state == ResState.hasData) {
+        if (value.state == ResState.successRegister) {
           context.go(RouteHelper.toPath(AppRoute.login));
         }
         return SingleChildScrollView(
@@ -150,9 +152,9 @@ class LoginForm extends StatelessWidget {
                         height: 20,
                       ),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            value.register(
+                            await value.register(
                               _nameController.text,
                               _emailController.text,
                               _passwordController.text,

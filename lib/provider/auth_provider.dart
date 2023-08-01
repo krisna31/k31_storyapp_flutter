@@ -12,14 +12,13 @@ class AuthProvider extends ChangeNotifier {
     required this.apiService,
   }) {
     checkLogin();
+    checkIsSplash();
   }
 
   String _message = '';
 
-  /// ! Dont forget to change this for spalash screen
-  // bool _isSplash = true;
+  bool _isSplash = true;
   bool _isLogin = false;
-  bool _isSplash = false;
   ResState _state = ResState.initial;
 
   bool get isLogin => _isLogin;
@@ -28,9 +27,15 @@ class AuthProvider extends ChangeNotifier {
   bool get isSplash => _isSplash;
 
   void initAuthProvider() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(
+      const Duration(seconds: 2),
+    );
     _isSplash = false;
     notifyListeners();
+  }
+
+  void checkIsSplash() {
+    _isSplash = isSplash;
   }
 
   void checkLogin() async {
@@ -42,7 +47,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void login(String email, String password) async {
+  Future<void> login(String email, String password) async {
     try {
       _state = ResState.loading;
       notifyListeners();
@@ -59,12 +64,12 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  void register(String name, String email, String password) async {
+  Future<void> register(String name, String email, String password) async {
     try {
       _state = ResState.loading;
       notifyListeners();
       await apiService.register(name, email, password);
-      _state = ResState.hasData;
+      _state = ResState.successRegister;
       notifyListeners();
     } catch (e) {
       _state = ResState.error;
@@ -78,7 +83,7 @@ class AuthProvider extends ChangeNotifier {
     await preferenceHelper.setToken('');
     await preferenceHelper.setName('');
     _isLogin = false;
-    _state = ResState.hasData;
+    _state = ResState.initial;
     notifyListeners();
   }
 }

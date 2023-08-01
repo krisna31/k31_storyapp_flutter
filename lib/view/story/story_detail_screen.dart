@@ -9,13 +9,18 @@ import '../../atom/image_with_network.dart';
 import '../../enum/res_state.dart';
 import '../../provider/story_provider.dart';
 
-class StoryDetailScreen extends StatelessWidget {
+class StoryDetailScreen extends StatefulWidget {
   final String? storyId;
   const StoryDetailScreen({
     super.key,
     required this.storyId,
   });
 
+  @override
+  State<StoryDetailScreen> createState() => _StoryDetailScreenState();
+}
+
+class _StoryDetailScreenState extends State<StoryDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
