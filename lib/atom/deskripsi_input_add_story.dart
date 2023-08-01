@@ -8,7 +8,7 @@ class DeskripsiInputAddStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 200),
+      padding: const EdgeInsets.symmetric(horizontal: 50),
       child: TextFormField(
         keyboardType: TextInputType.multiline,
         maxLines: null,
