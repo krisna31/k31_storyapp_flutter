@@ -34,17 +34,10 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
       body: Consumer<StoryProvider>(
         builder: (context, storyProvider, _) {
           if (storyProvider.state == ResState.loading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return _showLoading();
           } else if (storyProvider.state == ResState.error) {
-            return Center(
-              child: Text(
-                "Error: ${storyProvider.message}",
-                style: const TextStyle(
-                  color: Colors.red,
-                ),
-              ),
+            return ShowErrorText(
+              storyProvider: storyProvider,
             );
           } else {
             return Column(
@@ -82,6 +75,29 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
             );
           }
         },
+      ),
+    );
+  }
+
+  Center _showLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+}
+
+class ShowErrorText extends StatelessWidget {
+  final StoryProvider storyProvider;
+  const ShowErrorText({super.key, required this.storyProvider});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        "Error: ${storyProvider.message}",
+        style: const TextStyle(
+          color: Colors.red,
+        ),
       ),
     );
   }
