@@ -22,17 +22,18 @@ class EntryApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myRoute = MyRoute();
+    var authProvider = AuthProvider(
+      apiService: ApiService(),
+      preferenceHelper: PreferencesHelper(
+        sharedPreferences: SharedPreferences.getInstance(),
+      ),
+    );
+    final myRoute = MyRoute(authProvider: authProvider);
 
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthProvider>(
-          create: (_) => AuthProvider(
-            apiService: ApiService(),
-            preferenceHelper: PreferencesHelper(
-              sharedPreferences: SharedPreferences.getInstance(),
-            ),
-          ),
+          create: (_) => authProvider,
         ),
         ChangeNotifierProvider<StoryProvider>(
           create: (_) => StoryProvider(
@@ -45,8 +46,7 @@ class EntryApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         routerConfig: myRoute.router,
-        routeInformationParser: myRoute.router.routeInformationParser,
-        routerDelegate: myRoute.router.routerDelegate,
+        debugShowCheckedModeBanner: false,
       ),
     );
   }

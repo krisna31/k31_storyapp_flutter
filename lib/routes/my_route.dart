@@ -1,7 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:k31_storyapp_flutter/data/api/api_service.dart';
-import 'package:k31_storyapp_flutter/data/preferences/preference_helper.dart';
 import 'package:k31_storyapp_flutter/provider/auth_provider.dart';
 import 'package:k31_storyapp_flutter/routes/app_route.dart';
 import 'package:k31_storyapp_flutter/routes/route_helper.dart';
@@ -9,13 +9,17 @@ import 'package:k31_storyapp_flutter/view/error/error_screen.dart';
 import 'package:k31_storyapp_flutter/view/splash/splash_screen.dart';
 import 'package:k31_storyapp_flutter/view/story/stories_screen.dart';
 import 'package:k31_storyapp_flutter/view/story/story_detail_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../view/authentication/login_screen.dart';
 import '../view/authentication/register_screen.dart';
 
 class MyRoute {
-  final GoRouter router = GoRouter(
+  late final AuthProvider authProvider;
+
+  MyRoute({required this.authProvider});
+
+  late final GoRouter router = GoRouter(
+    refreshListenable: authProvider,
     routes: [
       GoRoute(
         path: RouteHelper.toPath(AppRoute.splash),
@@ -62,18 +66,13 @@ class MyRoute {
         ErrorScreen(error: state.error.toString()),
     initialLocation: RouteHelper.toPath(AppRoute.splash),
     redirect: (context, state) async {
-      final AuthProvider authProvider = AuthProvider(
-        preferenceHelper: PreferencesHelper(
-          sharedPreferences: SharedPreferences.getInstance(),
-        ),
-        apiService: ApiService(),
-      );
-
       final isLogin = authProvider.isLogin;
       final isSplash = authProvider.isSplash;
 
       final isGoingToLogin =
           state.matchedLocation == RouteHelper.toPath(AppRoute.login);
+
+      log(isSplash.toString());
 
       if (isSplash) {
         return RouteHelper.toPath(AppRoute.splash);

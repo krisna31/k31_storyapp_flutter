@@ -23,7 +23,6 @@ class AuthProvider extends ChangeNotifier {
   bool get isSplash => _isSplash;
 
   void initAuthProvider() async {
-    notifyListeners();
     await Future.delayed(const Duration(seconds: 2));
     _isSplash = false;
     notifyListeners();
