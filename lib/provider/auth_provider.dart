@@ -10,13 +10,15 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider({
     required this.preferenceHelper,
     required this.apiService,
-  });
+  }) {
+    checkLogin();
+  }
 
-  bool _isLogin = false;
   String _message = '';
 
   /// ! Dont forget to change this for spalash screen
   // bool _isSplash = true;
+  bool _isLogin = false;
   bool _isSplash = false;
   ResState _state = ResState.initial;
 
@@ -28,6 +30,15 @@ class AuthProvider extends ChangeNotifier {
   void initAuthProvider() async {
     await Future.delayed(const Duration(seconds: 2));
     _isSplash = false;
+    notifyListeners();
+  }
+
+  void checkLogin() async {
+    if (await preferenceHelper.getToken != '') {
+      _isLogin = true;
+    } else {
+      _isLogin = false;
+    }
     notifyListeners();
   }
 

@@ -14,6 +14,7 @@ class ImageWithNetwork extends StatelessWidget {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: url,
+      height: 300,
       progressIndicatorBuilder: (context, url, progress) => SizedBox(
         height: 200,
         child: Center(

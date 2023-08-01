@@ -5,6 +5,7 @@ import 'package:k31_storyapp_flutter/routes/app_route.dart';
 import 'package:k31_storyapp_flutter/routes/route_helper.dart';
 import 'package:k31_storyapp_flutter/view/error/error_screen.dart';
 import 'package:k31_storyapp_flutter/view/splash/splash_screen.dart';
+import 'package:k31_storyapp_flutter/view/story/add_story_screen.dart';
 import 'package:k31_storyapp_flutter/view/story/stories_screen.dart';
 import 'package:k31_storyapp_flutter/view/story/story_detail_screen.dart';
 
@@ -44,6 +45,12 @@ class MyRoute {
         },
       ),
       GoRoute(
+        path: RouteHelper.toPath(AppRoute.addStory),
+        builder: (BuildContext context, GoRouterState state) {
+          return const AddStoryScreen();
+        },
+      ),
+      GoRoute(
         path: RouteHelper.toPath(AppRoute.error),
         builder: (BuildContext context, GoRouterState state) {
           return ErrorScreen(
@@ -71,9 +78,14 @@ class MyRoute {
           state.matchedLocation == RouteHelper.toPath(AppRoute.login);
       final isGoingToRegister =
           state.matchedLocation == RouteHelper.toPath(AppRoute.register);
+      final isGoingToAddStory =
+          state.matchedLocation == RouteHelper.toPath(AppRoute.addStory);
+      final isGoingToDetailStory = state.matchedLocation.contains('/story-');
 
       if (isSplash) {
         return RouteHelper.toPath(AppRoute.splash);
+      } else if (isLogin && isGoingToDetailStory) {
+        return state.matchedLocation;
       } else if (isLogin) {
         return RouteHelper.toPath(AppRoute.home);
       } else if (!isLogin && isGoingToRegister) {

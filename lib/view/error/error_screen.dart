@@ -19,7 +19,7 @@ class ErrorScreen extends StatelessWidget {
         ),
       ),
       body: const Center(
-        child: Text("hellow word"),
+        child: Text("Error Screen"),
       ),
     );
   }

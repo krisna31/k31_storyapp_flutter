@@ -12,12 +12,20 @@ class StoryProvider extends ChangeNotifier {
   StoryProvider({
     required this.preferenceHelper,
     required this.apiService,
-  });
+  }) {
+    getAllStory();
+  }
 
-  late List<ListStory> _stories;
-  late Story _detailStory;
+  List<ListStory> _stories = [];
+  Story _detailStory = Story(
+    id: '',
+    name: '',
+    description: '',
+    createdAt: DateTime(123),
+    photoUrl: '',
+  );
   String _message = '';
-  late ResState _state;
+  ResState _state = ResState.initial;
 
   ResState get state => _state;
   String get message => _message;

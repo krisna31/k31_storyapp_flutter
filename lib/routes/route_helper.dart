@@ -13,6 +13,8 @@ class RouteHelper {
         return "/splash";
       case AppRoute.error:
         return "/error";
+      case AppRoute.addStory:
+        return "/add-story";
       case AppRoute.detailStory:
         return "/:storyId";
       default:
@@ -23,17 +25,19 @@ class RouteHelper {
   static String toTitle(AppRoute route) {
     switch (route) {
       case AppRoute.home:
-        return "My App";
+        return "Story App";
       case AppRoute.login:
         return "Log In";
       case AppRoute.register:
         return "Register";
       case AppRoute.splash:
         return "Splash";
+      case AppRoute.addStory:
+        return "Add Story";
       case AppRoute.error:
         return "Error";
       case AppRoute.detailStory:
-        return "Welcome to My App";
+        return "Add Story";
       default:
         return "My App";
     }
