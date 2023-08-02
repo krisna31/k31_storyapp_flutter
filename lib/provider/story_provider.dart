@@ -4,9 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:k31_storyapp_flutter/data/api/api_service.dart';
 import 'package:k31_storyapp_flutter/data/preferences/preference_helper.dart';
 import 'package:k31_storyapp_flutter/enum/res_state.dart';
-import 'package:k31_storyapp_flutter/models/detail_story_response.dart';
 import 'package:k31_storyapp_flutter/models/register_and_add_response.dart';
-import 'package:k31_storyapp_flutter/models/stories_response.dart';
+
+import '../models/story.dart';
 
 class StoryProvider extends ChangeNotifier {
   final PreferencesHelper preferenceHelper;
@@ -21,7 +21,7 @@ class StoryProvider extends ChangeNotifier {
     getAllStory();
   }
 
-  List<ListStory> _stories = [];
+  List<Story> _stories = [];
   Story _detailStory = Story(
     id: '',
     name: '',
@@ -38,7 +38,7 @@ class StoryProvider extends ChangeNotifier {
 
   ResState get state => _state;
   String get message => _message;
-  List<ListStory> get stories => _stories;
+  List<Story> get stories => _stories;
   Story get detailStory => _detailStory;
   RegisterAndAddStoryResponse? get addStoryResponse => _addStoryResponse;
 

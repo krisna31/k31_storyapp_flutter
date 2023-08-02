@@ -17,17 +17,81 @@ class StoriesScreen extends StatefulWidget {
 class _StoriesScreenState extends State<StoriesScreen> {
   @override
   Widget build(BuildContext context) {
-    List<IconButton> listOfActions = [
-      IconButton(
-        onPressed: () {
-          final authProvider = context.read<AuthProvider>();
-          authProvider.logout();
+    List<Widget> listOfActions = [
+      InkWell(
+        onTap: () {
+          // show toast for todo feature
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("This feature is not available yet"),
+            ),
+          );
         },
-        icon: const Icon(
-          Icons.exit_to_app,
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: Text(
+                  "Maps",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Icon(Icons.map),
+            ],
+          ),
         ),
-        tooltip: "Exit The App",
-      )
+      ),
+      InkWell(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Logout"),
+                content: const Text("Are you sure to logout?"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      final authProvider = context.read<AuthProvider>();
+                      authProvider.logout();
+                    },
+                    child: const Text("Logout"),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: Text(
+                  "Logout",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Icon(Icons.exit_to_app),
+            ],
+          ),
+        ),
+      ),
     ];
     return Scaffold(
       appBar: AppBar(

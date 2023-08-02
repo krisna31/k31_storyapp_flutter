@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'register_and_add_response.g.dart';
+
+@JsonSerializable()
 class RegisterAndAddStoryResponse {
   final bool error;
   final String message;
@@ -15,13 +19,7 @@ class RegisterAndAddStoryResponse {
   String toRawJson() => json.encode(toJson());
 
   factory RegisterAndAddStoryResponse.fromJson(Map<String, dynamic> json) =>
-      RegisterAndAddStoryResponse(
-        error: json["error"],
-        message: json["message"],
-      );
+      _$RegisterAndAddStoryResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "error": error,
-        "message": message,
-      };
+  Map<String, dynamic> toJson() => _$RegisterAndAddStoryResponseToJson(this);
 }
