@@ -13,6 +13,8 @@ class StoryProvider extends ChangeNotifier {
   final ApiService apiService;
   String? imagePath;
   XFile? imageFile;
+  int? pageItems = 1;
+  int sizeItems = 10;
 
   StoryProvider({
     required this.preferenceHelper,
@@ -21,7 +23,7 @@ class StoryProvider extends ChangeNotifier {
     getAllStory();
   }
 
-  List<Story> _stories = [];
+  final List<Story> _stories = [];
   Story _detailStory = Story(
     id: '',
     name: '',
@@ -43,25 +45,29 @@ class StoryProvider extends ChangeNotifier {
   GeneralResponse? get addStoryResponse => _addStoryResponse;
 
   void getAllStory({
-    int? page,
-    int limit = 10,
     int? location,
   }) async {
     try {
-      _state = ResState.loading;
+      if (pageItems == 1) {
+        _state = ResState.loading;
+        notifyListeners();
+      }
       final stories = await apiService.getAllStory(
         token: await preferenceHelper.getToken,
-        page: page,
-        limit: limit,
+        page: pageItems,
+        limit: sizeItems,
         location: location,
       );
+
       if (stories.listStory.isEmpty) {
         _state = ResState.noData;
         _message = 'Empty data';
       } else {
         _state = ResState.hasData;
-        _stories = stories.listStory;
+        _stories.addAll(stories.listStory);
       }
+
+      pageItems = stories.listStory.length < sizeItems ? null : pageItems! + 1;
       notifyListeners();
     } catch (e) {
       _state = ResState.error;

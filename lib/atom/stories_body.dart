@@ -6,23 +6,68 @@ import '../enum/res_state.dart';
 import '../provider/story_provider.dart';
 import 'image_with_network.dart';
 
-class StoriesBody extends StatelessWidget {
+class StoriesBody extends StatefulWidget {
   const StoriesBody({
     super.key,
   });
 
   @override
+  State<StoriesBody> createState() => _StoriesBodyState();
+}
+
+class _StoriesBodyState extends State<StoriesBody> {
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final storyProvider = Provider.of<StoryProvider>(context);
+    scrollController.addListener(() {
+      // log(scrollController.position.pixels.toString());
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent &&
+          storyProvider.pageItems != null) {
+        storyProvider.getAllStory();
+      }
+    });
     return Consumer<StoryProvider>(
       builder: (context, storyProvider, _) {
-        if (storyProvider.state == ResState.loading) {
+        if (storyProvider.state == ResState.loading &&
+            storyProvider.pageItems == 1) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         } else {
           return ListView.builder(
-            itemCount: storyProvider.stories.length,
+            controller: scrollController,
+            itemCount: storyProvider.stories.length +
+                (storyProvider.pageItems != null ? 1 : 0),
             itemBuilder: (context, index) {
+              if (index == storyProvider.stories.length &&
+                  storyProvider.pageItems != null) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
               return InkWell(
                 onTap: () {
                   storyProvider.getDetailStory(storyProvider.stories[index].id);
