@@ -24,6 +24,7 @@ class StoryProvider extends ChangeNotifier {
   }
 
   final List<Story> _stories = [];
+  List<Story> _storiesOnlyLoc = [];
   Story _detailStory = Story(
     id: '',
     name: '',
@@ -43,6 +44,32 @@ class StoryProvider extends ChangeNotifier {
   List<Story> get stories => _stories;
   Story get detailStory => _detailStory;
   GeneralResponse? get addStoryResponse => _addStoryResponse;
+  List<Story> get storiesOnlyLoc => _storiesOnlyLoc;
+
+  void getAllStoryOnlyLocation() async {
+    try {
+      _state = ResState.loading;
+      notifyListeners();
+      final stories = await apiService.getAllStory(
+        token: await preferenceHelper.getToken,
+        location: 1,
+      );
+
+      if (stories.listStory.isEmpty) {
+        _state = ResState.noData;
+        _message = 'Empty data';
+      } else {
+        _state = ResState.hasData;
+        _storiesOnlyLoc = stories.listStory;
+      }
+
+      notifyListeners();
+    } catch (e) {
+      _state = ResState.error;
+      _message = 'Get Data Story Gagal , $e';
+      notifyListeners();
+    }
+  }
 
   void getAllStory({
     int? location,

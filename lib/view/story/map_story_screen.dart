@@ -13,7 +13,7 @@ class MapsStoryScreen extends StatefulWidget {
 }
 
 class _MapsStoryScreenState extends State<MapsStoryScreen> {
-  final center = const LatLng(-6.8957473, 107.6337669);
+  final center = const LatLng(-4.195934383050533, 122.78875410511459);
   late GoogleMapController mapController;
   late final Set<Marker> markers = {};
 
@@ -22,9 +22,7 @@ class _MapsStoryScreenState extends State<MapsStoryScreen> {
     super.initState();
 
     Future.microtask(
-      () async => context.read<StoryProvider>().getAllStory(
-            location: 1,
-          ),
+      () async => context.read<StoryProvider>().getAllStoryOnlyLocation(),
     );
   }
 
@@ -56,45 +54,32 @@ class _MapsStoryScreenState extends State<MapsStoryScreen> {
           return Center(
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
-                zoom: 16,
+                zoom: 3,
                 target: center,
               ),
               markers: markers,
               onMapCreated: (controller) {
-                for (var story in storyProvider.stories) {
+                setState(() {
+                  mapController = controller;
+                });
+                for (var story in storyProvider.storiesOnlyLoc) {
+                  final pos = LatLng(
+                    story.lat!,
+                    story.lon!,
+                  );
                   final marker = Marker(
                     markerId: MarkerId(story.id.toString()),
-                    position: LatLng(
-                      story.lat!,
-                      story.lon!,
-                    ),
+                    position: pos,
                     onTap: () {
                       controller.animateCamera(
                         CameraUpdate.newLatLngZoom(
-                          LatLng(
-                            story.lat!,
-                            story.lon!,
-                          ),
-                          18,
+                          pos,
+                          11,
                         ),
                       );
                     },
                   );
-                  final bound = boundsFromLatLngList(
-                    storyProvider.stories
-                        .map(
-                          (e) => LatLng(
-                            e.lat!,
-                            e.lon!,
-                          ),
-                        )
-                        .toList(),
-                  );
-                  mapController.animateCamera(
-                    CameraUpdate.newLatLngBounds(bound, 50),
-                  );
                   setState(() {
-                    mapController = controller;
                     markers.add(marker);
                   });
                 }
@@ -106,25 +91,6 @@ class _MapsStoryScreenState extends State<MapsStoryScreen> {
           );
         },
       ),
-    );
-  }
-
-  LatLngBounds boundsFromLatLngList(List<LatLng> list) {
-    double? x0, x1, y0, y1;
-    for (LatLng latLng in list) {
-      if (x0 == null) {
-        x0 = x1 = latLng.latitude;
-        y0 = y1 = latLng.longitude;
-      } else {
-        if (latLng.latitude > x1!) x1 = latLng.latitude;
-        if (latLng.latitude < x0) x0 = latLng.latitude;
-        if (latLng.longitude > y1!) y1 = latLng.longitude;
-        if (latLng.longitude < y0!) y0 = latLng.longitude;
-      }
-    }
-    return LatLngBounds(
-      northeast: LatLng(x1!, y1!),
-      southwest: LatLng(x0!, y0!),
     );
   }
 }
