@@ -57,9 +57,24 @@ class ApiService {
     }
   }
 
-  Future<StoriesResponse> getAllStory(String token) async {
+  Future<StoriesResponse> getAllStory(
+    String token, {
+    int? page,
+    int limit = 10,
+    int? location,
+  }) async {
+    var urlBuilder = "$baseUrl/stories?size=$limit";
+    if (page != null) {
+      urlBuilder += "&page=$page";
+    }
+    if (location != null) {
+      urlBuilder += "&location=$location";
+    }
+    final urlHit = Uri.parse(
+      urlBuilder,
+    );
     final response = await http.get(
-      Uri.parse("$baseUrl/stories"),
+      urlHit,
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $token"
