@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:k31_storyapp_flutter/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -21,11 +23,15 @@ class _StoriesScreenState extends State<StoriesScreen> {
       InkWell(
         onTap: () {
           // show toast for todo feature
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("This feature is not available yet"),
-            ),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(
+          //     content: Text("This feature is not available yet"),
+          //   ),
+          // );
+          if (kIsWeb) {
+            return context.go(RouteHelper.toPath(AppRoute.maps));
+          }
+          context.push(RouteHelper.toPath(AppRoute.maps));
         },
         child: const Padding(
           padding: EdgeInsets.all(8.0),
