@@ -137,6 +137,8 @@ class StoryProvider extends ChangeNotifier {
     String fileName,
   ) async {
     try {
+      pageItems = 1;
+      _stories.clear();
       _message = "";
       _state = ResState.loading;
       notifyListeners();
