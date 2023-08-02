@@ -1,15 +1,16 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:k31_storyapp_flutter/models/detail_story_response.dart';
-import 'package:k31_storyapp_flutter/models/register_and_add_response.dart';
-import 'package:k31_storyapp_flutter/models/login_response.dart';
-import 'package:k31_storyapp_flutter/models/stories_response.dart';
+import 'package:k31_storyapp_flutter/models/general/general_response.dart';
+
+import '../../models/auth/login_response.dart';
+import '../../models/story/detail_story_response.dart';
+import '../../models/story/stories_response.dart';
 
 class ApiService {
   static const String baseUrl = 'https://story-api.dicoding.dev/v1';
 
-  Future<RegisterAndAddStoryResponse> register(
+  Future<GeneralResponse> register(
     String name,
     String email,
     String password,
@@ -25,9 +26,9 @@ class ApiService {
     );
 
     if (response.statusCode.toString().startsWith('2')) {
-      return RegisterAndAddStoryResponse.fromJson(json.decode(response.body));
+      return GeneralResponse.fromJson(json.decode(response.body));
     } else {
-      final error = RegisterAndAddStoryResponse.fromJson(
+      final error = GeneralResponse.fromJson(
         json.decode(response.body),
       );
       throw Exception('Gagal Register User: ${error.message}');
@@ -50,15 +51,15 @@ class ApiService {
     if (response.statusCode.toString().startsWith('2')) {
       return LoginResponse.fromJson(json.decode(response.body));
     } else {
-      final error = RegisterAndAddStoryResponse.fromJson(
+      final error = GeneralResponse.fromJson(
         json.decode(response.body),
       );
       throw Exception('Gagal Login User: ${error.message}');
     }
   }
 
-  Future<StoriesResponse> getAllStory(
-    String token, {
+  Future<StoriesResponse> getAllStory({
+    String? token,
     int? page,
     int limit = 10,
     int? location,
@@ -84,7 +85,7 @@ class ApiService {
     if (response.statusCode.toString().startsWith('2')) {
       return StoriesResponse.fromJson(json.decode(response.body));
     } else {
-      final error = RegisterAndAddStoryResponse.fromJson(
+      final error = GeneralResponse.fromJson(
         json.decode(response.body),
       );
       throw Exception('Gagal Login User: ${error.message}');
@@ -106,14 +107,14 @@ class ApiService {
     if (response.statusCode.toString().startsWith('2')) {
       return DetailStoryResponse.fromJson(json.decode(response.body));
     } else {
-      final error = RegisterAndAddStoryResponse.fromJson(
+      final error = GeneralResponse.fromJson(
         json.decode(response.body),
       );
       throw Exception('Gagal Login User: ${error.message}');
     }
   }
 
-  Future<RegisterAndAddStoryResponse> addStory(
+  Future<GeneralResponse> addStory(
     String description,
     List<int> foto,
     String token,
@@ -138,10 +139,9 @@ class ApiService {
     final responseFromServer = await http.Response.fromStream(response);
 
     if (response.statusCode == 201) {
-      return RegisterAndAddStoryResponse.fromJson(
-          json.decode(responseFromServer.body));
+      return GeneralResponse.fromJson(json.decode(responseFromServer.body));
     } else {
-      final error = RegisterAndAddStoryResponse.fromJson(
+      final error = GeneralResponse.fromJson(
         json.decode(responseFromServer.body),
       );
       throw Exception('Gagal Create Story: ${error.message}');

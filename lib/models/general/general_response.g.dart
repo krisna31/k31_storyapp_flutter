@@ -1,20 +1,18 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'register_and_add_response.dart';
+part of 'general_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-RegisterAndAddStoryResponse _$RegisterAndAddStoryResponseFromJson(
-        Map<String, dynamic> json) =>
-    RegisterAndAddStoryResponse(
+GeneralResponse _$GeneralResponseFromJson(Map<String, dynamic> json) =>
+    GeneralResponse(
       error: json['error'] as bool,
       message: json['message'] as String,
     );
 
-Map<String, dynamic> _$RegisterAndAddStoryResponseToJson(
-        RegisterAndAddStoryResponse instance) =>
+Map<String, dynamic> _$GeneralResponseToJson(GeneralResponse instance) =>
     <String, dynamic>{
       'error': instance.error,
       'message': instance.message,

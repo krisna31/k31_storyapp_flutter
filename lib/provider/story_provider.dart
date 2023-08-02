@@ -4,9 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:k31_storyapp_flutter/data/api/api_service.dart';
 import 'package:k31_storyapp_flutter/data/preferences/preference_helper.dart';
 import 'package:k31_storyapp_flutter/enum/res_state.dart';
-import 'package:k31_storyapp_flutter/models/register_and_add_response.dart';
+import 'package:k31_storyapp_flutter/models/general/general_response.dart';
 
-import '../models/story.dart';
+import '../models/story/story.dart';
 
 class StoryProvider extends ChangeNotifier {
   final PreferencesHelper preferenceHelper;
@@ -29,7 +29,7 @@ class StoryProvider extends ChangeNotifier {
     createdAt: DateTime(123),
     photoUrl: '',
   );
-  RegisterAndAddStoryResponse? _addStoryResponse = RegisterAndAddStoryResponse(
+  GeneralResponse? _addStoryResponse = GeneralResponse(
     error: false,
     message: '',
   );
@@ -40,13 +40,21 @@ class StoryProvider extends ChangeNotifier {
   String get message => _message;
   List<Story> get stories => _stories;
   Story get detailStory => _detailStory;
-  RegisterAndAddStoryResponse? get addStoryResponse => _addStoryResponse;
+  GeneralResponse? get addStoryResponse => _addStoryResponse;
 
-  void getAllStory() async {
+  void getAllStory({
+    int? page,
+    int limit = 10,
+    int? location,
+  }) async {
     try {
       _state = ResState.loading;
-      final stories =
-          await apiService.getAllStory(await preferenceHelper.getToken);
+      final stories = await apiService.getAllStory(
+        token: await preferenceHelper.getToken,
+        page: page,
+        limit: limit,
+        location: location,
+      );
       if (stories.listStory.isEmpty) {
         _state = ResState.noData;
         _message = 'Empty data';

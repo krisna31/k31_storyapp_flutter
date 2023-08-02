@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:k31_storyapp_flutter/models/story.dart';
+import 'package:k31_storyapp_flutter/models/story/story.dart';
 
 part 'detail_story_response.g.dart';
 
