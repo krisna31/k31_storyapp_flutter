@@ -18,8 +18,8 @@ class AuthProvider extends ChangeNotifier {
   String _message = '';
 
   /// ! change this to true for splash
-  // bool _isSplash = true;
-  bool _isSplash = false;
+  bool _isSplash = true;
+  // bool _isSplash = false;
   bool _isLogin = false;
   ResState _state = ResState.initial;
 
