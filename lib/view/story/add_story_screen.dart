@@ -31,7 +31,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: Text(RouteHelper.toTitle(AppRoute.detailStory)),
+      title: Text(RouteHelper.toTitle(AppRoute.addStory)),
       leading: const AddStoryLeadingIcon(),
     );
   }

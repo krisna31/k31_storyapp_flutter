@@ -16,7 +16,7 @@ class RouteHelper {
       case AppRoute.addStory:
         return "/add-story";
       case AppRoute.detailStory:
-        return "/:storyId";
+        return ":storyId";
       default:
         return "/";
     }
@@ -37,7 +37,7 @@ class RouteHelper {
       case AppRoute.error:
         return "Error";
       case AppRoute.detailStory:
-        return "Add Story";
+        return "Detail Story";
       default:
         return "My App";
     }

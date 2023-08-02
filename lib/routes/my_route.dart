@@ -39,30 +39,31 @@ class MyRoute {
         },
       ),
       GoRoute(
-        path: RouteHelper.toPath(AppRoute.home),
-        builder: (BuildContext context, GoRouterState state) {
-          return const StoriesScreen();
-        },
-      ),
-      GoRoute(
         path: RouteHelper.toPath(AppRoute.addStory),
         builder: (BuildContext context, GoRouterState state) {
           return const AddStoryScreen();
         },
       ),
       GoRoute(
+          path: RouteHelper.toPath(AppRoute.home),
+          builder: (BuildContext context, GoRouterState state) {
+            return const StoriesScreen();
+          },
+          routes: [
+            GoRoute(
+              path: RouteHelper.toPath(AppRoute.detailStory),
+              builder: (BuildContext context, GoRouterState state) {
+                return StoryDetailScreen(
+                  storyId: state.pathParameters['storyId'],
+                );
+              },
+            ),
+          ]),
+      GoRoute(
         path: RouteHelper.toPath(AppRoute.error),
         builder: (BuildContext context, GoRouterState state) {
           return ErrorScreen(
             error: state.extra.toString(),
-          );
-        },
-      ),
-      GoRoute(
-        path: RouteHelper.toPath(AppRoute.detailStory),
-        builder: (BuildContext context, GoRouterState state) {
-          return StoryDetailScreen(
-            storyId: state.pathParameters['storyId'],
           );
         },
       ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,7 +13,12 @@ class AddFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () => context.go(RouteHelper.toPath(AppRoute.addStory)),
+      onPressed: () {
+        if (kIsWeb) {
+          return context.go(RouteHelper.toPath(AppRoute.addStory));
+        }
+        context.push(RouteHelper.toPath(AppRoute.addStory));
+      },
       child: const Icon(Icons.add),
     );
   }
