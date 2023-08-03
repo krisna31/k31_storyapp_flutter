@@ -84,9 +84,7 @@ class _MapsStoryScreenState extends State<MapsStoryScreen> {
                   });
                 }
               },
-              myLocationButtonEnabled: false,
-              zoomControlsEnabled: false,
-              mapToolbarEnabled: false,
+              zoomControlsEnabled: true,
             ),
           );
         },

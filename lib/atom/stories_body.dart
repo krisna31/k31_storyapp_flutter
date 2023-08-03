@@ -52,6 +52,20 @@ class _StoriesBodyState extends State<StoriesBody> {
           return const Center(
             child: CircularProgressIndicator(),
           );
+        } else if (storyProvider.state == ResState.noData) {
+          return const Center(
+            child: Text("No Data"),
+          );
+        } else if (storyProvider.state == ResState.error) {
+          return Center(
+            child: Text(
+              "Error : ${storyProvider.message}",
+              style: const TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
         } else {
           return ListView.builder(
             controller: scrollController,

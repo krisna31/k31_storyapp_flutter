@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:k31_storyapp_flutter/routes/app_route.dart';
 import 'package:k31_storyapp_flutter/routes/route_helper.dart';
@@ -21,6 +22,8 @@ class StoryDetailScreen extends StatefulWidget {
 }
 
 class _StoryDetailScreenState extends State<StoryDetailScreen> {
+  late GoogleMapController mapController;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,38 +43,85 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
               storyProvider: storyProvider,
             );
           } else {
-            return Column(
-              children: [
-                ImageWithNetwork(
-                  url: storyProvider.detailStory.photoUrl,
-                  cacheKey: storyProvider.detailStory.id,
-                ),
-                ListTile(
-                  title: Text(
-                    "Created by ${storyProvider.detailStory.name}",
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  ImageWithNetwork(
+                    url: storyProvider.detailStory.photoUrl,
+                    cacheKey: storyProvider.detailStory.id,
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Created by ${storyProvider.detailStory.name}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "Description: ${storyProvider.detailStory.description}",
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "Created At: ${DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.parse(storyProvider.detailStory.createdAt.toString()).toUtc())}",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: Text(
-                    "Description: ${storyProvider.detailStory.description}",
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Created At: ${DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.parse(storyProvider.detailStory.createdAt.toString()).toUtc())}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+                  Builder(
+                    builder: (context) {
+                      final st = storyProvider.detailStory;
+                      final lati = st.lat;
+                      final long = st.lon;
+                      Set<Marker> markers = <Marker>{};
+                      if (lati != null && long != null) {
+                        return GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            zoom: 3,
+                            target: LatLng(lati, long),
+                          ),
+                          markers: markers,
+                          onMapCreated: (controller) {
+                            setState(() {
+                              mapController = controller;
+                            });
+                            final pos = LatLng(
+                              lati,
+                              long,
+                            );
+                            final marker = Marker(
+                              markerId: MarkerId(st.id),
+                              position: pos,
+                              onTap: () {
+                                controller.animateCamera(
+                                  CameraUpdate.newLatLngZoom(
+                                    pos,
+                                    11,
+                                  ),
+                                );
+                              },
+                            );
+                            setState(
+                              () {
+                                markers.add(marker);
+                              },
+                            );
+                          },
+                          zoomControlsEnabled: true,
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  )
+                ],
+              ),
             );
           }
         },

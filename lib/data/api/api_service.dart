@@ -119,6 +119,8 @@ class ApiService {
     List<int> foto,
     String token,
     String fileName,
+    double? latitude,
+    double? longitude,
   ) async {
     final request = http.MultipartRequest(
       'POST',
@@ -128,6 +130,8 @@ class ApiService {
       "Authorization": "Bearer $token",
     });
     request.fields['description'] = description;
+    if (latitude != null) request.fields['lat'] = latitude.toString();
+    if (longitude != null) request.fields['lon'] = longitude.toString();
     request.files.add(
       http.MultipartFile.fromBytes(
         'photo',

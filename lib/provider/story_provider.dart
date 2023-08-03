@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
@@ -96,6 +98,10 @@ class StoryProvider extends ChangeNotifier {
 
       pageItems = stories.listStory.length < sizeItems ? null : pageItems! + 1;
       notifyListeners();
+    } on SocketException {
+      _state = ResState.error;
+      _message = 'Tidak Terhubung Ke Internet';
+      notifyListeners();
     } catch (e) {
       _state = ResState.error;
       _message = 'Get Data Story Gagal , $e';
@@ -113,6 +119,10 @@ class StoryProvider extends ChangeNotifier {
       );
       _state = ResState.hasData;
       _detailStory = detailStory.story;
+      notifyListeners();
+    } on SocketException {
+      _state = ResState.error;
+      _message = 'Tidak Terhubung Ke Internet';
       notifyListeners();
     } catch (e) {
       _state = ResState.error;
@@ -135,6 +145,8 @@ class StoryProvider extends ChangeNotifier {
     String description,
     List<int> foto,
     String fileName,
+    double? latitude,
+    double? longitude,
   ) async {
     try {
       pageItems = 1;
@@ -148,9 +160,15 @@ class StoryProvider extends ChangeNotifier {
         foto,
         await preferenceHelper.getToken,
         fileName,
+        latitude,
+        longitude,
       );
       _state = ResState.hasData;
       _message = _addStoryResponse!.message.toString();
+      notifyListeners();
+    } on SocketException {
+      _state = ResState.error;
+      _message = 'Tidak Terhubung Ke Internet';
       notifyListeners();
     } catch (e) {
       _state = ResState.error;
