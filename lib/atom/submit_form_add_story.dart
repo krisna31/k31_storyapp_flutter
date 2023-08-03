@@ -23,6 +23,12 @@ class SubmitFormAddStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
       onPressed: () async {
         final imagePath = storyProvider.imagePath;
         final imageFile = storyProvider.imageFile;
