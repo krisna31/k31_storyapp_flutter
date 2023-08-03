@@ -9,11 +9,13 @@ import '../provider/story_provider.dart';
 class SubmitFormAddStory extends StatelessWidget {
   final StoryProvider storyProvider;
   final LatLng? latLng;
+  final GlobalKey<FormState> formKey;
   const SubmitFormAddStory({
     super.key,
     required TextEditingController descriptionController,
     required this.storyProvider,
     this.latLng,
+    required this.formKey,
   }) : _descriptionController = descriptionController;
 
   final TextEditingController _descriptionController;
@@ -36,6 +38,18 @@ class SubmitFormAddStory extends StatelessWidget {
           return;
         }
 
+        if (!formKey.currentState!.validate()) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                "Description is required",
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          );
+          return;
+        }
+
         if (latLng == null) {
           showDialog(
             context: context,
@@ -43,18 +57,24 @@ class SubmitFormAddStory extends StatelessWidget {
               return AlertDialog(
                 title: const Text("Are You Sure Submit Without Location?"),
                 content: const Text(
-                  "You can add locatio by long press on map",
-                  style: TextStyle(color: Colors.red),
+                  "You can add location by long press on map",
+                  style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                 ),
                 actions: [
                   TextButton(
-                    onPressed: () =>
-                        _submitTheStory(imageFile, context, null, null),
+                    onPressed: () => context.pop(),
                     child: const Text("Okay I will add the location"),
                   ),
                   TextButton(
-                    onPressed: () => context.pop(),
-                    child: const Text("Yes, Add the story"),
+                    onPressed: () =>
+                        _submitTheStory(imageFile, context, null, null),
+                    child: const Text(
+                      "Yes, Add the story",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               );
@@ -64,7 +84,11 @@ class SubmitFormAddStory extends StatelessWidget {
         }
 
         await _submitTheStory(
-            imageFile, context, latLng!.latitude, latLng!.longitude);
+          imageFile,
+          context,
+          latLng!.latitude,
+          latLng!.longitude,
+        );
       },
       child: storyProvider.state == ResState.loading
           ? const CircularProgressIndicator(
