@@ -11,7 +11,6 @@ class AuthProvider extends ChangeNotifier {
     required this.preferenceHelper,
     required this.apiService,
   }) {
-    _isSplash = false;
     checkLogin();
     checkIsSplash();
   }
@@ -19,7 +18,7 @@ class AuthProvider extends ChangeNotifier {
   String _message = '';
 
   /// ! change this to true for splash
-  late bool _isSplash;
+  bool _isSplash = true;
   // bool _isSplash = false;
   bool _isLogin = false;
   ResState _state = ResState.initial;

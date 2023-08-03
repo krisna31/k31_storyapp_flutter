@@ -22,10 +22,9 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const paddingPrimary = EdgeInsets.fromLTRB(32, 16, 31, 16);
     return Scaffold(
       appBar: _buildAppBar(),
-      body: _buildBody(paddingPrimary),
+      body: _buildBody(),
     );
   }
 
@@ -36,18 +35,15 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
     );
   }
 
-  Padding _buildBody(EdgeInsets paddingPrimary) {
-    return Padding(
-      padding: paddingPrimary,
-      child: Consumer<StoryProvider>(
-        builder: (context, storyProvider, child) {
-          return BuilderAddStory(
-            formKey: _formKey,
-            descriptionController: _descriptionController,
-            storyProvider: storyProvider,
-          );
-        },
-      ),
+  Consumer _buildBody() {
+    return Consumer<StoryProvider>(
+      builder: (context, storyProvider, child) {
+        return BuilderAddStory(
+          formKey: _formKey,
+          descriptionController: _descriptionController,
+          storyProvider: storyProvider,
+        );
+      },
     );
   }
 

@@ -32,8 +32,9 @@ class SubmitFormAddStory extends StatelessWidget {
       onPressed: () async {
         final imagePath = storyProvider.imagePath;
         final imageFile = storyProvider.imageFile;
+        final scaffold = ScaffoldMessenger.of(context);
         if (imagePath == null || imageFile == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffold.showSnackBar(
             const SnackBar(
               content: Text(
                 "Image is required",
@@ -45,7 +46,7 @@ class SubmitFormAddStory extends StatelessWidget {
         }
 
         if (!formKey.currentState!.validate()) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffold.showSnackBar(
             const SnackBar(
               content: Text(
                 "Description is required",
@@ -57,35 +58,7 @@ class SubmitFormAddStory extends StatelessWidget {
         }
 
         if (latLng == null) {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text("Are You Sure Submit Without Location?"),
-                content: const Text(
-                  "You can add location by long press on map",
-                  style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => context.pop(),
-                    child: const Text("Okay I will add the location"),
-                  ),
-                  TextButton(
-                    onPressed: () =>
-                        _submitTheStory(imageFile, context, null, null),
-                    child: const Text(
-                      "Yes, Add the story",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
+          _showWarningUploadWithoutLoc(context, imageFile);
           return;
         }
 
@@ -98,9 +71,41 @@ class SubmitFormAddStory extends StatelessWidget {
       },
       child: storyProvider.state == ResState.loading
           ? const CircularProgressIndicator(
-              color: Color.fromARGB(255, 123, 22, 213),
+              color: Color.fromARGB(255, 22, 68, 193),
             )
           : const Text("Upload Story"),
+    );
+  }
+
+  Future<dynamic> _showWarningUploadWithoutLoc(
+      BuildContext context, XFile imageFile) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Are You Sure Submit Without Location?"),
+          content: const Text(
+            "You can add location by long press on map",
+            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(),
+              child: const Text("Okay I will add the location"),
+            ),
+            TextButton(
+              onPressed: () => _submitTheStory(imageFile, context, null, null),
+              child: const Text(
+                "Yes, Add the story",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
