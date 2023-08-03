@@ -28,7 +28,7 @@ class BuilderAddStory extends StatefulWidget {
 class _BuilderAddStoryState extends State<BuilderAddStory> {
   late GoogleMapController mapController;
   Set<Marker> markers = {};
-  late LatLng latLng;
+  LatLng latLng = const LatLng(-4.195934383050533, 122.78875410511459);
 
   @override
   Widget build(BuildContext context) {

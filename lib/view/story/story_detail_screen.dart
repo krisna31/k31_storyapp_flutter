@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:k31_storyapp_flutter/routes/app_route.dart';
 import 'package:k31_storyapp_flutter/routes/route_helper.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:provider/provider.dart';
 
 import '../../atom/image_with_network.dart';
@@ -23,6 +25,8 @@ class StoryDetailScreen extends StatefulWidget {
 
 class _StoryDetailScreenState extends State<StoryDetailScreen> {
   late GoogleMapController mapController;
+  Set<Marker> markers = <Marker>{};
+  List<Placemark>? place;
 
   @override
   Widget build(BuildContext context) {
@@ -43,85 +47,133 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
               storyProvider: storyProvider,
             );
           } else {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  ImageWithNetwork(
-                    url: storyProvider.detailStory.photoUrl,
-                    cacheKey: storyProvider.detailStory.id,
-                  ),
-                  ListTile(
-                    title: Text(
-                      "Created by ${storyProvider.detailStory.name}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "Description: ${storyProvider.detailStory.description}",
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Created At: ${DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.parse(storyProvider.detailStory.createdAt.toString()).toUtc())}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Builder(
-                    builder: (context) {
-                      final st = storyProvider.detailStory;
-                      final lati = st.lat;
-                      final long = st.lon;
-                      Set<Marker> markers = <Marker>{};
-                      if (lati != null && long != null) {
-                        return GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                            zoom: 3,
-                            target: LatLng(lati, long),
-                          ),
-                          markers: markers,
-                          onMapCreated: (controller) {
-                            setState(() {
-                              mapController = controller;
-                            });
-                            final pos = LatLng(
-                              lati,
-                              long,
-                            );
-                            final marker = Marker(
+            return Builder(
+              builder: (context) {
+                final st = storyProvider.detailStory;
+                final lati = st.lat;
+                final long = st.lon;
+                if (lati != null && long != null) {
+                  Future.microtask(() async =>
+                      place = await geo.placemarkFromCoordinates(lati, long));
+                  final address =
+                      '${place?.first.subLocality}, ${place?.first.locality}, ${place?.first.postalCode}, ${place?.first.country}';
+                  return Stack(
+                    children: [
+                      GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          zoom: 8,
+                          target: LatLng(lati, long),
+                        ),
+                        markers: markers,
+                        onMapCreated: (controller) {
+                          final pos = LatLng(
+                            lati,
+                            long,
+                          );
+                          final marker = Marker(
                               markerId: MarkerId(st.id),
                               position: pos,
                               onTap: () {
                                 controller.animateCamera(
                                   CameraUpdate.newLatLngZoom(
                                     pos,
-                                    11,
+                                    500,
                                   ),
                                 );
                               },
-                            );
-                            setState(
-                              () {
-                                markers.add(marker);
-                              },
-                            );
-                          },
-                          zoomControlsEnabled: true,
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  )
-                ],
-              ),
+                              infoWindow: InfoWindow(
+                                  title: place?.first.street,
+                                  snippet: address));
+                          setState(
+                            () {
+                              mapController = controller;
+                              markers.add(marker);
+                            },
+                          );
+                        },
+                        zoomControlsEnabled: true,
+                      ),
+                      Container(
+                        height: 200,
+                        alignment: Alignment.topCenter,
+                        child: SingleChildScrollView(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              children: [
+                                ImageWithNetwork(
+                                  url: storyProvider.detailStory.photoUrl,
+                                  cacheKey: storyProvider.detailStory.id,
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    "Created by ${storyProvider.detailStory.name}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    "Description: ${storyProvider.detailStory.description}",
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "Created At: ${DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.parse(storyProvider.detailStory.createdAt.toString()).toUtc())}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return Column(
+                  children: [
+                    ImageWithNetwork(
+                      url: storyProvider.detailStory.photoUrl,
+                      cacheKey: storyProvider.detailStory.id,
+                    ),
+                    ListTile(
+                      title: Text(
+                        "Created by ${storyProvider.detailStory.name}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Description: ${storyProvider.detailStory.description}",
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Created At: ${DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.parse(storyProvider.detailStory.createdAt.toString()).toUtc())}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           }
         },
