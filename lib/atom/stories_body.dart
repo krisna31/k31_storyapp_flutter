@@ -21,6 +21,17 @@ class _StoriesBodyState extends State<StoriesBody> {
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(() {
+      // log(scrollController.position.pixels.toString());
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        final storyProvider =
+            Provider.of<StoryProvider>(context, listen: false);
+        if (storyProvider.pageItems != null) {
+          storyProvider.getAllStory();
+        }
+      }
+    });
   }
 
   @override
@@ -36,15 +47,6 @@ class _StoriesBodyState extends State<StoriesBody> {
 
   @override
   Widget build(BuildContext context) {
-    final storyProvider = Provider.of<StoryProvider>(context);
-    scrollController.addListener(() {
-      // log(scrollController.position.pixels.toString());
-      if (scrollController.position.pixels >=
-              scrollController.position.maxScrollExtent &&
-          storyProvider.pageItems != null) {
-        storyProvider.getAllStory();
-      }
-    });
     return Consumer<StoryProvider>(
       builder: (context, storyProvider, _) {
         if (storyProvider.state == ResState.loading &&
@@ -69,11 +71,9 @@ class _StoriesBodyState extends State<StoriesBody> {
         } else {
           return ListView.builder(
             controller: scrollController,
-            itemCount: storyProvider.stories.length +
-                (storyProvider.pageItems != null ? 1 : 0),
+            itemCount: getItemCount(storyProvider),
             itemBuilder: (context, index) {
-              if (index == storyProvider.stories.length &&
-                  storyProvider.pageItems != null) {
+              if (isBottomPage(index, storyProvider)) {
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(8),
@@ -84,10 +84,7 @@ class _StoriesBodyState extends State<StoriesBody> {
 
               return InkWell(
                 onTap: () {
-                  storyProvider.getDetailStory(storyProvider.stories[index].id);
-                  context.go(
-                    '/${storyProvider.stories[index].id}',
-                  );
+                  _goToDetailPage(storyProvider, index, context);
                 },
                 child: Column(
                   children: [
@@ -116,5 +113,23 @@ class _StoriesBodyState extends State<StoriesBody> {
         }
       },
     );
+  }
+
+  void _goToDetailPage(
+      StoryProvider storyProvider, int index, BuildContext context) {
+    storyProvider.getDetailStory(storyProvider.stories[index].id);
+    context.go(
+      '/${storyProvider.stories[index].id}',
+    );
+  }
+
+  bool isBottomPage(int index, StoryProvider storyProvider) {
+    return index == storyProvider.stories.length &&
+        storyProvider.pageItems != null;
+  }
+
+  int getItemCount(StoryProvider storyProvider) {
+    return storyProvider.stories.length +
+        (storyProvider.pageItems != null ? 1 : 0);
   }
 }

@@ -9,6 +9,7 @@ import 'package:k31_storyapp_flutter/enum/res_state.dart';
 import 'package:k31_storyapp_flutter/models/general/general_response.dart';
 
 import '../models/story/story.dart';
+import 'package:k31_storyapp_flutter/models/story/stories_response.dart';
 
 class StoryProvider extends ChangeNotifier {
   final PreferencesHelper preferenceHelper;
@@ -77,10 +78,7 @@ class StoryProvider extends ChangeNotifier {
     int? location,
   }) async {
     try {
-      if (pageItems == 1) {
-        _state = ResState.loading;
-        notifyListeners();
-      }
+      ifFirstPageShowLoading();
       final stories = await apiService.getAllStory(
         token: await preferenceHelper.getToken,
         page: pageItems,
@@ -88,7 +86,7 @@ class StoryProvider extends ChangeNotifier {
         location: location,
       );
 
-      if (stories.listStory.isEmpty) {
+      if (stories.listStory.isEmpty && pageItems == 1) {
         _state = ResState.noData;
         _message = 'Empty data';
       } else {
@@ -96,8 +94,8 @@ class StoryProvider extends ChangeNotifier {
         _stories.addAll(stories.listStory);
       }
 
-      pageItems = stories.listStory.length < sizeItems ? null : pageItems! + 1;
       notifyListeners();
+      pageItems = stopFetchIfLastPage(stories);
     } on SocketException {
       _state = ResState.error;
       _message = 'Tidak Terhubung Ke Internet';
@@ -108,6 +106,16 @@ class StoryProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void ifFirstPageShowLoading() {
+    if (pageItems == 1) {
+      _state = ResState.loading;
+      notifyListeners();
+    }
+  }
+
+  int? stopFetchIfLastPage(StoriesResponse stories) =>
+      stories.listStory.length < sizeItems ? null : pageItems! + 1;
 
   void getDetailStory(String id) async {
     try {
