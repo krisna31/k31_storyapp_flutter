@@ -63,7 +63,7 @@ class _StoriesScreenState extends State<StoriesScreen> {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      context.pop();
                     },
                     child: const Text("Cancel"),
                   ),

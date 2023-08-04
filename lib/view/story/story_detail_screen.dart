@@ -103,94 +103,107 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     );
   }
 
-  Stack _showWithGoogleMap(
+  FutureBuilder<List<Placemark>> _showWithGoogleMap(
       double lati, double long, Story st, StoryProvider storyProvider) {
-    Future.microtask(
-      () async => place = await geo.placemarkFromCoordinates(lati, long),
-    );
-    final address = StringHelper.getAddressFromPlace(place);
-    return Stack(
-      children: [
-        GoogleMap(
-          initialCameraPosition: CameraPosition(
-            zoom: 8,
-            target: LatLng(lati, long),
-          ),
-          markers: markers,
-          onMapCreated: (controller) {
-            final pos = LatLng(
-              lati,
-              long,
-            );
-            final marker = Marker(
-                markerId: MarkerId(st.id),
-                position: pos,
-                onTap: () {
-                  controller.animateCamera(
-                    CameraUpdate.newLatLngZoom(
-                      pos,
-                      500,
-                    ),
-                  );
-                },
-                infoWindow:
-                    InfoWindow(title: place?.first.street, snippet: address));
-            setState(
-              () {
-                mapController = controller;
-                markers.add(marker);
-              },
-            );
-          },
-          zoomControlsEnabled: true,
-          buildingsEnabled: true,
-          trafficEnabled: true,
-        ),
-        Container(
-          height: 200,
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
+    return FutureBuilder(
+      future: geo.placemarkFromCoordinates(lati, long),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text("Error"),
+          );
+        }
+        if (!snapshot.hasData) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        place = snapshot.data;
+        final address = StringHelper.getAddressFromPlace(place);
+        return Stack(
+          children: [
+            GoogleMap(
+              initialCameraPosition: CameraPosition(
+                zoom: 8,
+                target: LatLng(lati, long),
               ),
-              child: Column(
-                children: [
-                  ImageWithNetwork(
-                    url: storyProvider.detailStory.photoUrl,
-                    cacheKey: storyProvider.detailStory.id,
+              markers: markers,
+              onMapCreated: (controller) {
+                final pos = LatLng(
+                  lati,
+                  long,
+                );
+                final marker = Marker(
+                    markerId: MarkerId(st.id),
+                    position: pos,
+                    onTap: () {
+                      controller.animateCamera(
+                        CameraUpdate.newLatLngZoom(
+                          pos,
+                          500,
+                        ),
+                      );
+                    },
+                    infoWindow: InfoWindow(
+                        title: place?.first.street, snippet: address));
+                setState(
+                  () {
+                    mapController = controller;
+                    markers.add(marker);
+                  },
+                );
+              },
+              zoomControlsEnabled: true,
+              buildingsEnabled: true,
+              trafficEnabled: true,
+            ),
+            Container(
+              height: 200,
+              alignment: Alignment.topCenter,
+              child: SingleChildScrollView(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
                   ),
-                  ListTile(
-                    title: Text(
-                      "Created by ${storyProvider.detailStory.name}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                  child: Column(
+                    children: [
+                      ImageWithNetwork(
+                        url: storyProvider.detailStory.photoUrl,
+                        cacheKey: storyProvider.detailStory.id,
                       ),
-                    ),
-                    subtitle: Text(
-                      "Description: ${storyProvider.detailStory.description}",
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                      ListTile(
+                        title: Text(
+                          "Created by ${storyProvider.detailStory.name}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Text(
+                          "Description: ${storyProvider.detailStory.description}",
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Created At: ${DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.parse(storyProvider.detailStory.createdAt.toString()).toUtc())}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Created At: ${DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.parse(storyProvider.detailStory.createdAt.toString()).toUtc())}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
